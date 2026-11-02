@@ -9203,7 +9203,8 @@
    ]
   }
  ],
- "fc3d_source": "cwl.gov.cn(官方)",
- "kl8_source": "cwl.gov.cn(官方)",
- "fetched_at": "2026-11-02 11:00:47"
+ "fc3d_source": "500.com",
+ "kl8_source": "500.com(日期由3D映射)",
+ "fetched_at": "2026-11-02 03:13:09",
+ "merged": true
 }
