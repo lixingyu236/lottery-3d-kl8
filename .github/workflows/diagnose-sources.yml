@@ -1,0 +1,38 @@
+name: diagnose-sources
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe lottery data sources
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+          probe() {
+            local name="$1"; shift
+            code=$(curl -s -o /tmp/out.bin -w "%{http_code}" --max-time 25 -A "$UA" "$@" || echo "ERR")
+            size=$(wc -c < /tmp/out.bin 2>/dev/null || echo 0)
+            echo "PROBE|$name|http=$code|bytes=$size"
+            head -c 200 /tmp/out.bin | tr '\n' ' ' | sed 's/^/PROBE_BODY|'"$name"'|/' || true
+            echo ""
+            rm -f /tmp/out.bin
+          }
+          # 官方API（GET，控制组，预期403）
+          probe "cwl_api_3d_get" "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=3d&issueCount=5"
+          # 官方API POST 变体
+          probe "cwl_api_3d_post" -X POST -H "Referer: https://www.cwl.gov.cn/ygkj/wqkjgg/" -d "name=3d&issueCount=5" "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice"
+          # 500彩票网
+          probe "500_zx_sd" "https://zx.500.com/sd/"
+          probe "500_zx_kl8" "https://zx.500.com/kl8/"
+          probe "500_datachart_kl8" "https://datachart.500.com/kl8/history/newinc/history.php?limit=5"
+          probe "500_datachart_3d" "https://datachart.500.com/3d/history/newinc/history.php?limit=5"
+          probe "500_datachart_ssq" "https://datachart.500.com/ssq/history/newinc/history.php?limit=5"
+          # 中彩网
+          probe "zhcw_main" "https://www.zhcw.com/"
+          probe "zhcw_kjxx" "https://www.zhcw.com/kjxx/"
+          # Gitee（备用中继）
+          probe "gitee_main" "https://gitee.com/"
+          # 控制组：github api
+          probe "github_api" "https://api.github.com"
