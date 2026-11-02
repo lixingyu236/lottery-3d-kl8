@@ -7,32 +7,25 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe lottery data sources
+      - name: Probe lottery data sources v2
         run: |
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
           probe() {
             local name="$1"; shift
-            code=$(curl -s -o /tmp/out.bin -w "%{http_code}" --max-time 25 -A "$UA" "$@" || echo "ERR")
+            code=$(curl -sS -o /tmp/out.bin -w "%{http_code}" --max-time 25 -A "$UA" "$@" 2>/tmp/err.txt || echo "ERR")
             size=$(wc -c < /tmp/out.bin 2>/dev/null || echo 0)
-            echo "PROBE|$name|http=$code|bytes=$size"
-            head -c 200 /tmp/out.bin | tr '\n' ' ' | sed 's/^/PROBE_BODY|'"$name"'|/' || true
+            echo "PROBE|$name|http=$code|bytes=$size|err=$(cat /tmp/err.txt | head -c 80)"
+            head -c 150 /tmp/out.bin | tr '\n' ' ' | sed 's/^/PROBE_BODY|'"$name"'|/' || true
             echo ""
-            rm -f /tmp/out.bin
+            rm -f /tmp/out.bin /tmp/err.txt
           }
-          # 官方API（GET，控制组，预期403）
-          probe "cwl_api_3d_get" "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice?name=3d&issueCount=5"
-          # 官方API POST 变体
-          probe "cwl_api_3d_post" -X POST -H "Referer: https://www.cwl.gov.cn/ygkj/wqkjgg/" -d "name=3d&issueCount=5" "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice"
-          # 500彩票网
-          probe "500_zx_sd" "https://zx.500.com/sd/"
-          probe "500_zx_kl8" "https://zx.500.com/kl8/"
-          probe "500_datachart_kl8" "https://datachart.500.com/kl8/history/newinc/history.php?limit=5"
-          probe "500_datachart_3d" "https://datachart.500.com/3d/history/newinc/history.php?limit=5"
-          probe "500_datachart_ssq" "https://datachart.500.com/ssq/history/newinc/history.php?limit=5"
-          # 中彩网
-          probe "zhcw_main" "https://www.zhcw.com/"
-          probe "zhcw_kjxx" "https://www.zhcw.com/kjxx/"
-          # Gitee（备用中继）
-          probe "gitee_main" "https://gitee.com/"
-          # 控制组：github api
-          probe "github_api" "https://api.github.com"
+          # 中彩网API（带完整参数）
+          probe "zhcw_api_3d" -H "Referer: https://www.zhcw.com/kjxx/3d/" "https://jc.zhcw.com/port/client_json.php?transactionType=10001001&lotteryId=2&issueCount=10&pageNum=1&pageSize=10&type=0&tt=0.1"
+          # 中彩网静态JSON
+          probe "zhcw_static_kl8" "https://www.zhcw.com/chartstatic/json/kj_kl8.json"
+          probe "zhcw_static_3d" "https://www.zhcw.com/chartstatic/json/kj_3d.json"
+          # 500网数据页
+          probe "500_sd_300" "https://datachart.500.com/sd/history/inc/history.php?limit=300"
+          probe "500_kl8_100" "https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml?expect=100"
+          # 复测www.zhcw.com（对照）
+          probe "zhcw_www" "https://www.zhcw.com/"
