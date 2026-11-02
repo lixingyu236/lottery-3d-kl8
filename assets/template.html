@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="福彩3D·快乐8 热号/遗漏/常出组合分析 + 每日推荐（快乐8选5~选10），数据来源于中国福彩网官方开奖公告">
+<title>福彩3D·快乐8 每日分析推荐</title>
+<style>
+:root{
+  --bg:#0b1226; --card:#141f42; --card2:#1a274d; --line:#26345f;
+  --gold:#f5c542; --gold2:#ffdf8a; --red2:#ff8f8f; --blue:#4da3ff;
+  --green:#41d9a0; --text:#e8ecf7; --dim:#9aa7c9; --dim2:#6b7a9f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(160deg,#0b1226 0%,#0e1733 55%,#131f45 100%);
+  color:var(--text);min-height:100vh;padding-bottom:36px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 14px}
+header{text-align:center;padding:26px 10px 10px}
+header h1{font-size:25px;letter-spacing:1px;color:var(--gold2);text-shadow:0 0 18px rgba(245,197,66,.25)}
+header .sub{color:var(--dim);font-size:13px;margin-top:6px}
+.badge{display:inline-block;background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.35);
+  color:var(--gold);border-radius:20px;padding:3px 12px;font-size:12px;margin-top:8px}
+.tabs{display:flex;gap:10px;justify-content:center;margin:18px 0 6px}
+.tab{flex:1;max-width:300px;padding:12px 6px;text-align:center;border-radius:12px;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);color:var(--dim);font-size:16px;font-weight:700;
+  transition:.2s;user-select:none}
+.tab.active{background:linear-gradient(135deg,#3a2f12,#57400f);border-color:var(--gold);color:var(--gold2);
+  box-shadow:0 4px 18px rgba(245,197,66,.18)}
+.tab small{display:block;font-size:11px;font-weight:400;margin-top:3px;opacity:.75}
+.section{display:none}.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin:12px 0}
+.card h3{font-size:15px;color:var(--gold2);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .tag{font-size:11px;background:rgba(77,163,255,.16);color:#7db9ff;padding:1px 8px;border-radius:8px;font-weight:400}
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:780px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.kpi .num{font-size:21px;font-weight:800;color:var(--gold)}
+.kpi .num.red{color:var(--red2)}
+.kpi .num.green{color:var(--green)}
+.kpi .num.blue{color:var(--blue)}
+.kpi .lbl{font-size:11px;color:var(--dim);margin-top:3px}
+.nums{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:4px 0}
+.ball{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;color:#231a00;background:radial-gradient(circle at 32% 28%,#ffe9a8,#f5c542 55%,#c9961c);
+  box-shadow:0 3px 8px rgba(0,0,0,.35),inset 0 -2px 3px rgba(0,0,0,.18);user-select:none}
+.ball.sm{width:31px;height:31px;font-size:13px}
+.ball.xs{width:26px;height:26px;font-size:11px}
+.ball.kl{color:#fff;background:radial-gradient(circle at 32% 28%,#ff9c9c,#e03939 55%,#a31212)}
+.ball.pick{cursor:pointer;transition:.12s}
+.ball.pick:hover{transform:scale(1.1)}
+.ball.on{outline:2px solid var(--green);outline-offset:2px;
+  background:radial-gradient(circle at 32% 28%,#a8ffdc,#41d9a0 55%,#1ca36e);color:#03301f}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{color:var(--dim);font-weight:600;padding:6px 3px;border-bottom:1px solid var(--line);text-align:center;font-size:11.5px}
+td{padding:5px 3px;text-align:center;border-bottom:1px solid rgba(38,52,95,.45)}
+tr:last-child td{border-bottom:none}
+.hot{color:var(--red2);font-weight:700}
+.cold{color:var(--green);font-weight:700}
+.heatwrap{overflow-x:auto}
+.trend{display:flex;align-items:flex-end;gap:2px;height:118px}
+.trend .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:1px;height:100%;min-width:0}
+.trend .bar{width:100%;border-radius:2px 2px 0 0;min-height:3px}
+.trend .lbl{font-size:8px;color:var(--dim);white-space:nowrap;margin-top:2px}
+.bars80{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;align-items:end;height:150px}
+.bars80 .col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;height:100%}
+.bars80 .bar{width:100%;min-height:2px;background:linear-gradient(180deg,#4da3ff,#1d4f9c);border-radius:2px 2px 0 0}
+.bars80 .n{font-size:8px;color:var(--dim)}
+.bars80 .top .bar{background:linear-gradient(180deg,#ff8f8f,#c22a1e)}
+.bars80 .top .n{color:var(--red2);font-weight:700}
+.reco{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px}
+.reco .title{font-size:14px;color:var(--gold2);display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;gap:6px}
+.reco .score{font-size:11px;color:var(--dim)}
+.srow{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12px;color:var(--dim)}
+.srow label{width:80px;flex-shrink:0}
+.srow input[type=range]{flex:1;accent-color:var(--gold);min-width:60px}
+.srow .val{width:30px;text-align:right;color:var(--gold2);font-weight:700}
+.btn{background:linear-gradient(135deg,#57400f,#3a2f12);border:1px solid var(--gold);color:var(--gold2);
+  border-radius:10px;padding:9px 15px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+.btn:hover{filter:brightness(1.18)}
+.btn.ghost{background:var(--card2);border-color:var(--line);color:var(--dim)}
+.hint{font-size:11px;color:var(--dim);line-height:1.6;margin-top:7px}
+.notice{margin:14px 0 4px;padding:11px 13px;border-radius:12px;background:rgba(255,93,93,.08);
+  border:1px solid rgba(255,93,93,.3);color:#ffc4c4;font-size:12.5px;line-height:1.7}
+footer{text-align:center;color:var(--dim);font-size:11px;padding:20px 10px 6px;line-height:1.9}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:6px;justify-content:center}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.pool{display:flex;flex-wrap:wrap;gap:5px}
+.linecell{display:flex;align-items:center;gap:6px;margin:5px 0;flex-wrap:wrap}
+.rk{font-size:11px;color:var(--dim2);width:26px}
+.rankrow{display:flex;align-items:center;gap:6px;margin:4px 0;flex-wrap:wrap}
+@media(max-width:780px){
+  header h1{font-size:20px}
+  .ball{width:34px;height:34px;font-size:14px}
+  .card{padding:12px}
+  .reco .title{font-size:13px}
+}
+</style>
+</head>
+<body>
+<script id="lottery-data" type="application/json">__LOTTERY_DATA__</script>
+<div class="wrap">
+  <header>
+    <h1>福彩3D · 快乐8 每日分析</h1>
+    <div class="sub">热号 · 遗漏 · 常出组合 · 每日推荐（快乐8 选5~选10）</div>
+    <div class="badge" id="snap-badge">数据快照：读取中…</div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="d3">福彩3D<small>直选 · 组选 · 五码复式</small></div>
+    <div class="tab" data-tab="kl8">快乐8<small>选5 ~ 选10 推荐</small></div>
+  </div>
+
+  <!-- ============ 福彩3D ============ -->
+  <div class="section active" id="sec-d3">
+    <div class="card">
+      <h3>📌 最新开奖 <span class="tag" id="d3-latest-period"></span></h3>
+      <div class="nums" id="d3-latest-nums"></div>
+      <div class="legend" id="d3-latest-date"></div>
+    </div>
+    <div class="grid g4">
+      <div class="kpi"><div class="num" id="d3-cnt">-</div><div class="lbl">统计期数</div></div>
+      <div class="kpi"><div class="num green" id="d3-avgsum">-</div><div class="lbl">平均和值</div></div>
+      <div class="kpi"><div class="num blue" id="d3-avgspan">-</div><div class="lbl">平均跨度</div></div>
+      <div class="kpi"><div class="num red" id="d3-maxmiss">-</div><div class="lbl">当前最大遗漏</div></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>🔥 热号 TOP（近30期）</h3><div id="d3-hot"></div></div>
+      <div class="card"><h3>🧊 冷号 · 遗漏王</h3><div id="d3-cold"></div></div>
+      <div class="card"><h3>🎯 常出组合</h3><div id="d3-pairs"></div></div>
+    </div>
+    <div class="card">
+      <h3>📊 遗漏总表（当前 / 平均 / 历史最大）</h3>
+      <div class="heatwrap"><table>
+        <thead><tr><th>数字</th><th>百位</th><th>十位</th><th>个位</th></tr></thead>
+        <tbody id="d3-missbody"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>📈 最近30期走势</h3>
+      <div class="trend" id="d3-trend"></div>
+      <div class="legend" style="justify-content:flex-start">
+        <span><i style="background:#f5c542"></i>百位</span><span><i style="background:#4da3ff"></i>十位</span><span><i style="background:#ff8f8f"></i>个位</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎯 每日推荐 <span class="tag" id="d3-today"></span></h3>
+      <div class="grid g2">
+        <div class="reco">
+          <div class="title">权重调节（4因子评分）</div>
+          <div class="srow"><label>位置频率</label><input type="range" data-f="posF" min="0" max="100" value="50"><span class="val">50</span></div>
+          <div class="srow"><label>整体频率</label><input type="range" data-f="allF" min="0" max="100" value="25"><span class="val">25</span></div>
+          <div class="srow"><label>遗漏回补</label><input type="range" data-f="missF" min="0" max="100" value="25"><span class="val">25</span></div>
+          <div class="srow"><label>近期活跃</label><input type="range" data-f="recF" min="0" max="100" value="0"><span class="val">0</span></div>
+          <div class="hint">评分 = 位置频率 + 整体频率 + 遗漏回补 + 近期活跃（权重归一化后加权）。每次打开页面为当日固定组合；点「重新生成」换新组合。</div>
+        </div>
+        <div class="reco">
+          <div class="title">锁定号码池<span class="score">点击锁定</span></div>
+          <div class="pool" id="d3-lockpool"></div>
+          <div class="hint">锁定的数字强制保留在五码复式与组选推荐中，直选推荐也会优先放置。</div>
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:12px">
+        <div class="reco"><div class="title">直选推荐<span class="score">3注</span></div><div id="d3-direct"></div></div>
+        <div class="reco"><div class="title">组选推荐<span class="score">2注</span></div><div id="d3-group"></div></div>
+        <div class="reco"><div class="title">五码复式<span class="score">0-9选5</span></div><div id="d3-five"></div></div>
+      </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:13px">
+        <button class="btn" id="d3-regen">🎲 重新生成</button>
+        <button class="btn ghost" id="d3-lockbest">一键锁定高分号</button>
+        <button class="btn ghost" id="d3-clearlock">全部解锁</button>
+      </div>
+      <div class="notice">⚠️ 理性购彩：开奖为独立随机事件，本页推荐基于历史数据统计，仅供娱乐参考，不构成任何中奖承诺。请量力而行，切勿沉迷。</div>
+    </div>
+  </div>
+
+  <!-- ============ 快乐8 ============ -->
+  <div class="section" id="sec-kl8">
+    <div class="card">
+      <h3>📌 最新开奖 <span class="tag" id="kl8-latest-period"></span></h3>
+      <div class="nums" id="kl8-latest-nums"></div>
+      <div class="legend" id="kl8-latest-date"></div>
+    </div>
+    <div class="grid g4">
+      <div class="kpi"><div class="num" id="kl8-cnt">-</div><div class="lbl">统计期数</div></div>
+      <div class="kpi"><div class="num red" id="kl8-hotn">-</div><div class="lbl">近30期热号数(≥6次)</div></div>
+      <div class="kpi"><div class="num blue" id="kl8-avgsum">-</div><div class="lbl">每期平均和值</div></div>
+      <div class="kpi"><div class="num green" id="kl8-maxmiss">-</div><div class="lbl">当前最大遗漏</div></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>🔥 热号榜（近30期 TOP20）</h3><div id="kl8-hot30"></div></div>
+      <div class="card"><h3>🔥 热号榜（近100期 TOP20）</h3><div id="kl8-hot100"></div></div>
+      <div class="card"><h3>🧊 遗漏榜（当前 TOP20）</h3><div id="kl8-cold"></div></div>
+    </div>
+    <div class="card">
+      <h3>📊 号码频率分布（近100期，红色=热号）</h3>
+      <div class="bars80" id="kl8-bars"></div>
+    </div>
+    <div class="card">
+      <h3>🎯 常出组合（两码高频 TOP10）</h3>
+      <div id="kl8-zone"></div>
+      <div id="kl8-pairs" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h3>🎯 每日推荐（选5~选10）<span class="tag" id="kl8-today"></span></h3>
+      <div class="grid g2">
+        <div class="reco">
+          <div class="title">权重调节（3因子评分）</div>
+          <div class="srow"><label>整体热度</label><input type="range" data-k="allF" min="0" max="100" value="45"><span class="val">45</span></div>
+          <div class="srow"><label>近期活跃</label><input type="range" data-k="recF" min="0" max="100" value="25"><span class="val">25</span></div>
+          <div class="srow"><label>遗漏回补</label><input type="range" data-k="missF" min="0" max="100" value="30"><span class="val">30</span></div>
+          <div class="hint">评分 = 整体热度(近100期) + 近期活跃(近30期) + 遗漏回补。锁定号码强制包含在每个玩法中。</div>
+        </div>
+        <div class="reco">
+          <div class="title">锁定号码池（01-80）<span class="score">点击锁定</span></div>
+          <div class="pool" id="kl8-lockpool"></div>
+        </div>
+      </div>
+      <div class="grid g3" id="kl8-recos" style="margin-top:12px"></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:13px">
+        <button class="btn" id="kl8-regen">🎲 换一组推荐</button>
+        <button class="btn ghost" id="kl8-clearlock">全部解锁</button>
+      </div>
+      <div class="notice">⚠️ 理性购彩：快乐8开奖为随机独立事件，推荐基于历史统计分析，仅供娱乐参考。请理性投注、量力而行，未成年人不得购彩。</div>
+    </div>
+  </div>
+
+  <footer>
+    数据来源：中国福利彩票发行管理中心官方开奖公告（cwl.gov.cn）· 仅供参考，理性购彩<br>
+    <span id="snap-detail"></span><br>
+    每日推荐 = 多因子加权评分 + 日期随机种子（每天自动换新）
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ================= 工具 ================= */
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.from((r||document).querySelectorAll(s));}
+function pad2(n){return (n<10?'0':'')+n;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+function seedOfToday(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());}
+function ballHTML(n,cls){return '<span class="ball '+(cls||'')+'">'+n+'</span>';}
+
+/* ================= 数据 ================= */
+const RAW = JSON.parse(document.getElementById('lottery-data').textContent);
+const FC3D = RAW.fc3d||[], KL8 = RAW.kl8||[];
+const N3 = FC3D.length, N8 = KL8.length;
+
+/* ================= 3D 统计 ================= */
+const S3 = (function(){
+  const pos=[new Array(10).fill(0),new Array(10).fill(0),new Array(10).fill(0)];
+  const all=new Array(10).fill(0), last30=new Array(10).fill(0);
+  const curMiss=[new Array(10).fill(0),new Array(10).fill(0),new Array(10).fill(0)];
+  const maxMiss=[new Array(10).fill(0),new Array(10).fill(0),new Array(10).fill(0)];
+  const pairCounts={}; let bao=0,zx3=0,zx6=0,sum=0,span=0;
+  for(let i=0;i<N3;i++){
+    const n=FC3D[i].numbers;
+    for(let p=0;p<3;p++){
+      pos[p][n[p]]++;
+      if(i<30) last30[n[p]]++;
+    }
+    all[n[0]]++;all[n[1]]++;all[n[2]]++;
+    sum+=n[0]+n[1]+n[2];
+    span+=Math.max(n[0],n[1],n[2])-Math.min(n[0],n[1],n[2]);
+    const s=new Set(n);
+    if(s.size===1)bao++;else if(s.size===2)zx3++;else zx6++;
+    const t=n.slice().sort(function(a,b){return a-b;});
+    for(let a=0;a<3;a++)for(let b=a+1;b<3;b++){
+      const k=t[a]+','+t[b]; pairCounts[k]=(pairCounts[k]||0)+1;
+    }
+  }
+  for(let p=0;p<3;p++){
+    for(let d=0;d<10;d++){
+      let gap=0,mx=0;
+      for(let i=0;i<N3;i++){
+        if(FC3D[i].numbers[p]===d){ if(gap>mx)mx=gap; gap=0; }
+        else gap++;
+      }
+      curMiss[p][d]=gap; if(gap>mx)mx=gap; maxMiss[p][d]=mx;
+    }
+  }
+  const pairs=Object.keys(pairCounts).map(function(k){return [k,pairCounts[k]];})
+    .sort(function(a,b){return b[1]-a[1];});
+  return {pos:pos,all:all,last30:last30,curMiss:curMiss,maxMiss:maxMiss,pairs:pairs,
+    bao:bao,zx3:zx3,zx6:zx6,avgSum:N3?sum/N3:0,avgSpan:N3?span/N3:0};
+})();
+
+/* ================= 快乐8 统计 ================= */
+const K8 = (function(){
+  const M=100, R=30;
+  const freqAll=new Array(81).fill(0), freqRec=new Array(81).fill(0);
+  const curMiss=new Array(81).fill(0), maxMiss=new Array(81).fill(0);
+  const zone=new Array(8).fill(0); let sum=0, conPairs=0;
+  const pm=[]; for(let i=0;i<=80;i++){pm[i]=new Array(81).fill(0);}
+  for(let i=0;i<N8;i++){
+    const n=KL8[i].numbers.slice().sort(function(a,b){return a-b;});
+    for(let j=0;j<n.length;j++){
+      const x=n[j];
+      if(i<M)freqAll[x]++;
+      if(i<R){freqRec[x]++;zone[Math.floor((x-1)/10)]++;}
+    }
+    sum+=n.reduce(function(a,b){return a+b;},0);
+    for(let a=0;a<20;a++){
+      if(a<19&&n[a+1]===n[a]+1)conPairs++;
+      for(let b=a+1;b<20;b++){ pm[n[a]][n[b]]++; }
+    }
+  }
+  for(let d=1;d<=80;d++){
+    let gap=0,mx=0;
+    for(let i=0;i<N8;i++){
+      if(KL8[i].numbers.indexOf(d)>=0){ if(gap>mx)mx=gap; gap=0; }
+      else gap++;
+    }
+    curMiss[d]=gap; if(gap>mx)mx=gap; maxMiss[d]=mx;
+  }
+  const topPairs=[];
+  for(let a=1;a<80;a++)for(let b=a+1;b<=80;b++){ if(pm[a][b]>0)topPairs.push([[a,b],pm[a][b]]); }
+  topPairs.sort(function(x,y){return y[1]-x[1];});
+  return {M:M,R:R,freqAll:freqAll,freqRec:freqRec,curMiss:curMiss,maxMiss:maxMiss,
+    zone:zone,avgSum:N8?sum/N8:0,conPer:N8?conPairs/N8:0,topPairs:topPairs.slice(0,10)};
+})();
+
+/* ================= 3D 渲染 ================= */
+function renderD3Latest(){
+  const L=FC3D[0]; if(!L)return;
+  $('#d3-latest-period').textContent='第'+L.period+'期';
+  $('#d3-latest-nums').innerHTML=L.numbers.map(function(n){return ballHTML(n);}).join('');
+  $('#d3-latest-date').innerHTML='<span>'+L.date+' 开奖</span>';
+  $('#d3-cnt').textContent=N3;
+  $('#d3-avgsum').textContent=S3.avgSum.toFixed(1);
+  $('#d3-avgspan').textContent=S3.avgSpan.toFixed(1);
+  let mm=0; for(let p=0;p<3;p++)for(let d=0;d<10;d++){ if(S3.curMiss[p][d]>mm)mm=S3.curMiss[p][d]; }
+  $('#d3-maxmiss').textContent=mm;
+}
+function renderD3Cards(){
+  const labels=['百位','十位','个位'];
+  let html='';
+  for(let p=0;p<3;p++){
+    const idx=[];for(let d=0;d<10;d++)idx.push(d);
+    idx.sort(function(a,b){return S3.last30[b]-S3.last30[a];});
+    const top=idx.slice(0,5);
+    html+='<div class="linecell"><span class="rk">'+labels[p]+'</span>'+
+      top.map(function(n){return ballHTML(n,'sm');}).join('')+
+      '<span style="font-size:11px;color:var(--dim)">'+S3.last30[top[4]]+'~'+S3.last30[top[0]]+'次</span></div>';
+  }
+  $('#d3-hot').innerHTML=html;
+  let cold='';
+  for(let p=0;p<3;p++){
+    let bd=-1,bn=0;
+    for(let d=0;d<10;d++){ if(S3.curMiss[p][d]>bd){bd=S3.curMiss[p][d];bn=d;} }
+    cold+='<div class="linecell"><span class="rk">'+labels[p]+'</span>'+ballHTML(bn,'sm on')+
+      '<span class="cold">已遗漏 '+bd+' 期</span></div>';
+  }
+  $('#d3-cold').innerHTML=cold;
+  $('#d3-pairs').innerHTML=
+    '<div style="font-size:11.5px;color:var(--dim);margin-bottom:7px">形态：豹子 '+S3.bao+' · 组三 '+S3.zx3+' · 组六 '+S3.zx6+'（近'+N3+'期）</div>'+
+    S3.pairs.slice(0,6).map(function(x,i){
+      return '<div class="rankrow"><span class="rk">#'+(i+1)+'</span>'+
+        x[0].split(',').map(function(t){return ballHTML(t,'sm');}).join('')+
+        '<span style="color:var(--gold);font-weight:700;font-size:12.5px">'+x[1]+'次</span></div>';
+    }).join('');
+}
+function renderD3Miss(){
+  let html='';
+  for(let d=0;d<10;d++){
+    let row='<td style="font-weight:800;color:var(--gold2)">'+d+'</td>';
+    for(let p=0;p<3;p++){
+      const cm=S3.curMiss[p][d], mm=S3.maxMiss[p][d];
+      const avg=N3/Math.max(S3.pos[p][d],1);
+      const cls=cm>=8?'cold':(cm<=1?'hot':'');
+      row+='<td class="'+cls+'">'+cm+'<span style="color:var(--dim)"> / '+avg.toFixed(1)+' / '+mm+'</span></td>';
+    }
+    html+='<tr>'+row+'</tr>';
+  }
+  $('#d3-missbody').innerHTML=html;
+}
+function renderD3Trend(){
+  const slice=FC3D.slice(0,30).reverse();
+  const colors=['#f5c542','#4da3ff','#ff8f8f'];
+  const box=$('#d3-trend'); box.innerHTML='';
+  slice.forEach(function(it,i){
+    const col=document.createElement('div'); col.className='col';
+    it.numbers.forEach(function(n,p){
+      const b=document.createElement('div'); b.className='bar';
+      b.style.height=Math.max(4,(n+1)/10*92)+'px';
+      b.style.background=colors[p];
+      b.title='第'+it.period+'期 '+(n<10?'0':'')+n;
+      col.appendChild(b);
+    });
+    if(i%5===4||i===0){
+      const lb=document.createElement('div'); lb.className='lbl';
+      lb.textContent=it.period.slice(4);
+      col.appendChild(lb);
+    }
+    box.appendChild(col);
+  });
+}
+
+/* ================= 3D 推荐 ================= */
+let d3Locks=new Set(), d3Gen=0;
+function d3Weights(){
+  const g=function(k){return +$('#sec-d3 [data-f='+k+']').value;};
+  const t=(g('posF')+g('allF')+g('missF')+g('recF'))||1;
+  return {posF:g('posF')/t,allF:g('allF')/t,missF:g('missF')/t,recF:g('recF')/t};
+}
+function normArr(arr){const m=Math.max.apply(null,arr)||1;return arr.map(function(x){return x/m;});}
+function d3PosScores(){
+  const w=d3Weights();
+  const allN=normArr(S3.all), recN=normArr(S3.last30);
+  return [0,1,2].map(function(p){
+    const posN=normArr(S3.pos[p]), missN=normArr(S3.curMiss[p]);
+    const out=[];
+    for(let d=0;d<10;d++){
+      out.push({d:d, v: w.posF*posN[d] + w.allF*allN[d] + w.missF*missN[d] + w.recF*recN[d]});
+    }
+    return out.sort(function(a,b){return b.v-a.v;});
+  });
+}
+function d3OverallScores(){
+  const ps=d3PosScores(); const out=[];
+  for(let d=0;d<10;d++){
+    let v=0; for(let p=0;p<3;p++){ const f=ps[p].find(function(x){return x.d===d;}); v+=f?f.v:0; }
+    out.push({d:d,v:v/3});
+  }
+  return out.sort(function(a,b){return b.v-a.v;});
+}
+function weightedTake(items,rnd,k,lockArr){
+  const pool=items.slice(), out=[];
+  (lockArr||[]).forEach(function(n){
+    const i=pool.findIndex(function(x){return x.d===n;});
+    if(i>=0){out.push(pool[i]);pool.splice(i,1);}
+  });
+  let total=pool.reduce(function(s,x){return s+Math.max(x.v,0.001);},0);
+  while(out.length<k&&pool.length){
+    let r=rnd()*total, idx=pool.length-1;
+    for(let i=0;i<pool.length;i++){ r-=Math.max(pool[i].v,0.001); if(r<=0){idx=i;break;} }
+    out.push(pool[idx]); total-=Math.max(pool[idx].v,0.001); pool.splice(idx,1);
+  }
+  while(out.length<k){ const n=Math.floor(rnd()*10); if(!out.find(function(x){return x.d===n;})) out.push({d:n,v:0}); }
+  return out;
+}
+function renderD3LockPool(){
+  const box=$('#d3-lockpool'); box.innerHTML='';
+  for(let d=0;d<10;d++){
+    const b=document.createElement('span');
+    b.className='ball sm pick'+(d3Locks.has(d)?' on':'');
+    b.textContent=d;
+    b.onclick=function(){ if(d3Locks.has(d))d3Locks.delete(d); else d3Locks.add(d); renderD3LockPool(); renderD3Reco(); };
+    box.appendChild(b);
+  }
+}
+function renderD3Reco(){
+  const base=seedOfToday();
+  const locks=Array.from(d3Locks);
+  const ps=d3PosScores();
+  const rnd=mulberry32(base*131+d3Gen);
+  // 直选3注：锁定号优先散布到不同位置
+  const direct=[];
+  for(let i=0;i<3;i++){
+    const rows=[null,null,null];
+    locks.slice(0,3).forEach(function(n){
+      const cand=[0,1,2].filter(function(p){return rows[p]==null;});
+      if(cand.length){ const p=cand[Math.floor(rnd()*cand.length)]; rows[p]=n; }
+    });
+    for(let p=0;p<3;p++){
+      if(rows[p]==null){
+        const avoid=rows.filter(function(x){return x!=null;});
+        const poolItem=weightedTake(ps[p],rnd,1,[])[0];
+        rows[p]=poolItem.d;
+      }
+    }
+    direct.push(rows);
+  }
+  $('#d3-direct').innerHTML=direct.map(function(r,i){
+    return '<div class="linecell"><span class="rk">'+(i+1)+'</span>'+
+      r.map(function(n){return ballHTML(n);}).join('')+'</div>';
+  }).join('')+'<div class="hint">三位置号码也可两两组合为定位复式</div>';
+  // 五码复式：综合评分 top5 + 锁定
+  const ov=d3OverallScores();
+  const five=weightedTake(ov,mulberry32(base*137+d3Gen),5,locks);
+  $('#d3-five').innerHTML=five.map(function(x){return ballHTML(x.d,'sm'+(d3Locks.has(x.d)?' on':''));}).join('')+
+    '<div class="hint">5码任意组三共10注，覆盖组六/组三形态</div>';
+  // 组选2注：从五码中加权抽3
+  const rnd2=mulberry32(base*139+d3Gen);
+  const fivePool=five.map(function(x){return {d:x.d,v:x.v};});
+  const groups=[];
+  for(let i=0;i<2;i++){
+    const g=weightedTake(fivePool,rnd2,3,locks.slice(0,3))
+      .map(function(x){return x.d;}).sort(function(a,b){return a-b;});
+    groups.push(g);
+  }
+  $('#d3-group').innerHTML=groups.map(function(g,i){
+    return '<div class="linecell"><span class="rk">'+(i+1)+'</span>'+
+      g.map(function(n){return ballHTML(n,'sm');}).join('')+'</div>';
+  }).join('')+'<div class="hint">升序展示（组三/组六形态）</div>';
+  $('#d3-today').textContent=todayStr()+' 生成 · 第'+(d3Gen+1)+'组';
+}
+
+/* ================= 快乐8 渲染 ================= */
+function renderK8Latest(){
+  const L=KL8[0]; if(!L)return;
+  $('#kl8-latest-period').textContent='第'+L.period+'期';
+  $('#kl8-latest-nums').innerHTML=L.numbers.map(function(n){return ballHTML(pad2(n),'kl sm');}).join('');
+  $('#kl8-latest-date').innerHTML='<span>'+L.date+' 开奖 · 每期开出20个号码（01-80中选20）</span>';
+  $('#kl8-cnt').textContent=N8;
+  let hotn=0; for(let d=1;d<=80;d++){ if(K8.freqRec[d]>=6)hotn++; }
+  $('#kl8-hotn').textContent=hotn;
+  $('#kl8-avgsum').textContent=K8.avgSum.toFixed(0);
+  let mm=0,mn=0; for(let d=1;d<=80;d++){ if(K8.curMiss[d]>mm){mm=K8.curMiss[d];mn=d;} }
+  $('#kl8-maxmiss').textContent=mm+'('+pad2(mn)+')';
+}
+function k8RankHTML(arr){
+  const mx=arr[0]?arr[0][1]:1;
+  return arr.map(function(x,i){
+    return '<div class="rankrow"><span class="rk">'+(i+1)+'</span>'+ballHTML(pad2(x[0]),'kl sm')+
+      '<span style="font-size:12px;color:'+(x[1]>=mx*0.8?'var(--red2)':'var(--dim)')+'">'+x[1]+'次</span></div>';
+  }).join('');
+}
+function renderK8Cards(){
+  const f30=[],f100=[],cold=[];
+  for(let d=1;d<=80;d++){
+    f30.push([d,K8.freqRec[d]]); f100.push([d,K8.freqAll[d]]); cold.push([d,K8.curMiss[d]]);
+  }
+  f30.sort(function(a,b){return b[1]-a[1];}); f100.sort(function(a,b){return b[1]-a[1];});
+  cold.sort(function(a,b){return b[1]-a[1];});
+  $('#kl8-hot30').innerHTML=k8RankHTML(f30.slice(0,20));
+  $('#kl8-hot100').innerHTML=k8RankHTML(f100.slice(0,20));
+  $('#kl8-cold').innerHTML=cold.slice(0,20).map(function(x,i){
+    return '<div class="rankrow"><span class="rk">'+(i+1)+'</span>'+ballHTML(pad2(x[0]),'sm')+
+      '<span class="cold" style="font-size:12px">遗漏 '+x[1]+' 期</span></div>';
+  }).join('');
+  // 频率条形图（近100期）
+  let maxF=0; for(let d=1;d<=80;d++){ if(K8.freqAll[d]>maxF)maxF=K8.freqAll[d]; }
+  const topSet=new Set(f100.slice(0,20).map(function(x){return x[0];}));
+  let bars='';
+  for(let d=1;d<=80;d++){
+    const h=Math.max(2,K8.freqAll[d]/(maxF||1)*120);
+    bars+='<div class="col'+(topSet.has(d)?' top':'')+'">'+
+      '<div class="bar" style="height:'+h+'px" title="'+pad2(d)+'：近100期出现'+K8.freqAll[d]+'次，当前遗漏'+K8.curMiss[d]+'期"></div>'+
+      '<div class="n">'+pad2(d)+'</div></div>';
+  }
+  $('#kl8-bars').innerHTML=bars;
+  // 区间热度 + 连号 + 两码组合
+  const zmax=Math.max.apply(null,K8.zone)||1;
+  $('#kl8-zone').innerHTML='<div style="font-size:11.5px;color:var(--dim);line-height:1.8">区间热度(近30期)：'+
+    K8.zone.map(function(z,i){
+      const pct=Math.round(z/zmax*100);
+      return '<span>'+((i*10+1)+'-'+((i+1)*10))+'<b style="color:var(--red2)">'+pct+'%</b></span>';
+    }).join(' · ')+'<br>平均每期出现连号 '+K8.conPer.toFixed(1)+' 组</div>';
+  $('#kl8-pairs').innerHTML=K8.topPairs.map(function(x,i){
+    return '<div class="rankrow"><span class="rk">#'+(i+1)+'</span>'+
+      ballHTML(pad2(x[0][0]),'kl sm')+ballHTML(pad2(x[0][1]),'kl sm')+
+      '<span style="color:var(--gold);font-weight:700;font-size:12.5px">'+x[1]+'次</span></div>';
+  }).join('');
+}
+
+/* ================= 快乐8 推荐 ================= */
+let k8Locks=new Set(), k8Gen=0;
+function k8Weights(){
+  const g=function(k){return +$('#sec-kl8 [data-k='+k+']').value;};
+  const t=(g('allF')+g('recF')+g('missF'))||1;
+  return {allF:g('allF')/t,recF:g('recF')/t,missF:g('missF')/t};
+}
+function k8Scores(){
+  const w=k8Weights();
+  const allN=normArr(K8.freqAll.slice(1)), recN=normArr(K8.freqRec.slice(1)), missN=normArr(K8.curMiss.slice(1));
+  const out=[];
+  for(let d=1;d<=80;d++){
+    out.push({d:d,v: w.allF*allN[d-1] + w.recF*recN[d-1] + w.missF*missN[d-1]});
+  }
+  return out.sort(function(a,b){return b.v-a.v;});
+}
+function renderK8LockPool(){
+  const box=$('#kl8-lockpool'); box.innerHTML='';
+  for(let d=1;d<=80;d++){
+    const b=document.createElement('span');
+    b.className='ball xs pick'+(k8Locks.has(d)?' on':'');
+    b.textContent=pad2(d);
+    b.onclick=function(){ if(k8Locks.has(d))k8Locks.delete(d); else k8Locks.add(d); renderK8LockPool(); renderK8Recos(); };
+    box.appendChild(b);
+  }
+}
+function renderK8Recos(){
+  const base=seedOfToday();
+  const plays=[5,6,7,8,9,10];
+  const scores=k8Scores();
+  const box=$('#kl8-recos'); box.innerHTML='';
+  plays.forEach(function(k){
+    const rnd=mulberry32(base*17+k*3+k8Gen);
+    let picks=[];
+    const locks=Array.from(k8Locks);
+    if(locks.length>=k){
+      picks=locks.slice(0,k);
+    }else{
+      const lockedPool=scores.filter(function(x){return k8Locks.has(x.d);});
+      const rest=weightedTake(scores.filter(function(x){return !k8Locks.has(x.d);}),rnd,k-lockedPool.length,[]);
+      picks=lockedPool.map(function(x){return x.d;}).concat(rest.map(function(x){return x.d;}));
+    }
+    picks.sort(function(a,b){return a-b;});
+    let avg=0; picks.forEach(function(n){const f=scores.find(function(x){return x.d===n;}); avg+=(f?f.v:0);});
+    avg=avg/picks.length;
+    const div=document.createElement('div'); div.className='reco';
+    div.innerHTML='<div class="title">选'+k+'<span class="score">平均分 '+(avg*100).toFixed(0)+'</span></div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:4px">'+
+      picks.map(function(n){return ballHTML(pad2(n),'kl sm'+(k8Locks.has(n)?' on':''));}).join('')+'</div>'+
+      '<div class="hint">第'+(k8Gen+1)+'组 · 今日固定，点「换一组」再选</div>';
+    box.appendChild(div);
+  });
+  $('#kl8-today').textContent=todayStr()+' 生成 · 第'+(k8Gen+1)+'组';
+}
+
+/* ================= 快照信息 & 事件 ================= */
+function renderSnap(){
+  const b=$('#snap-badge');
+  if(FC3D.length&&KL8.length){
+    b.textContent='数据截至：3D 第'+FC3D[0].period+'期 / 快乐8 第'+KL8[0].period+'期（'+FC3D[0].date+'开奖）';
+  }
+  $('#snap-detail').textContent='本页数据快照生成于 '+(RAW.fetched_at||'')+
+    '，内置福彩3D '+N3+'期、快乐8 '+N8+'期官方开奖数据。';
+}
+function bindEvents(){
+  $$('.tab').forEach(function(t){
+    t.onclick=function(){
+      $$('.tab').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      $$('.section').forEach(function(s){s.classList.toggle('active',s.id==='sec-'+t.dataset.tab);});
+    };
+  });
+  $$('#sec-d3 input[type=range]').forEach(function(r){
+    r.oninput=function(){ r.parentElement.querySelector('.val').textContent=r.value; renderD3Reco(); };
+  });
+  $$('#sec-kl8 input[type=range]').forEach(function(r){
+    r.oninput=function(){ r.parentElement.querySelector('.val').textContent=r.value; renderK8Recos(); };
+  });
+  $('#d3-regen').onclick=function(){ d3Gen++; renderD3Reco(); };
+  $('#d3-lockbest').onclick=function(){
+    d3Locks.clear();
+    d3OverallScores().slice(0,3).forEach(function(x){d3Locks.add(x.d);});
+    renderD3LockPool(); renderD3Reco();
+  };
+  $('#d3-clearlock').onclick=function(){ d3Locks.clear(); renderD3LockPool(); renderD3Reco(); };
+  $('#kl8-regen').onclick=function(){ k8Gen++; renderK8Recos(); };
+  $('#kl8-clearlock').onclick=function(){ k8Locks.clear(); renderK8LockPool(); renderK8Recos(); };
+}
+function init(){
+  if(!FC3D.length&&!KL8.length){
+    document.body.innerHTML='<div style="padding:60px;text-align:center;color:#f88">数据加载失败，请重新生成页面。</div>';
+    return;
+  }
+  renderSnap();
+  renderD3Latest(); renderD3Cards(); renderD3Miss(); renderD3Trend();
+  renderD3LockPool(); renderD3Reco();
+  renderK8Latest(); renderK8Cards(); renderK8LockPool(); renderK8Recos();
+  bindEvents();
+}
+init();
+</script>
+</body>
+</html>
