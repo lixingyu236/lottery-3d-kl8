@@ -29,7 +29,10 @@ jobs:
         run: pip install requests
 
       - name: Fetch latest draw data
-        run: python scripts/fetch_lottery_data.py --output data/lottery_data.json
+        run: python scripts/fetch_lottery_data.py --output data/new_lottery_data.json
+
+      - name: Merge with history
+        run: python scripts/merge_lottery_data.py --new data/new_lottery_data.json --old data/lottery_data.json --output data/lottery_data.json
 
       - name: Regenerate webpage
         run: python scripts/generate_webpage.py --input data/lottery_data.json --output index.html
@@ -39,6 +42,8 @@ jobs:
           git config user.name "lottery-updater"
           git config user.email "actions@users.noreply.github.com"
           git add index.html data/lottery_data.json
+          git rm --cached data/new_lottery_data.json 2>/dev/null || true
+          rm -f data/new_lottery_data.json
           if git diff --cached --quiet; then
             echo "No changes, skip commit."
           else
