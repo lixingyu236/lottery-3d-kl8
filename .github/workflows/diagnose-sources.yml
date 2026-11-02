@@ -7,25 +7,20 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe lottery data sources v2
+      - name: Count kl8 zoushi rows with different params
         run: |
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-          probe() {
-            local name="$1"; shift
-            code=$(curl -sS -o /tmp/out.bin -w "%{http_code}" --max-time 25 -A "$UA" "$@" 2>/tmp/err.txt || echo "ERR")
-            size=$(wc -c < /tmp/out.bin 2>/dev/null || echo 0)
-            echo "PROBE|$name|http=$code|bytes=$size|err=$(cat /tmp/err.txt | head -c 80)"
-            head -c 150 /tmp/out.bin | tr '\n' ' ' | sed 's/^/PROBE_BODY|'"$name"'|/' || true
-            echo ""
-            rm -f /tmp/out.bin /tmp/err.txt
-          }
-          # 中彩网API（带完整参数）
-          probe "zhcw_api_3d" -H "Referer: https://www.zhcw.com/kjxx/3d/" "https://jc.zhcw.com/port/client_json.php?transactionType=10001001&lotteryId=2&issueCount=10&pageNum=1&pageSize=10&type=0&tt=0.1"
-          # 中彩网静态JSON
-          probe "zhcw_static_kl8" "https://www.zhcw.com/chartstatic/json/kj_kl8.json"
-          probe "zhcw_static_3d" "https://www.zhcw.com/chartstatic/json/kj_3d.json"
-          # 500网数据页
-          probe "500_sd_300" "https://datachart.500.com/sd/history/inc/history.php?limit=300"
-          probe "500_kl8_100" "https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml?expect=100"
-          # 复测www.zhcw.com（对照）
-          probe "zhcw_www" "https://www.zhcw.com/"
+          for desc_url in \
+            "default|https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml" \
+            "expect100|https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml?expect=100" \
+            "expectall|https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml?expect=all&from=2026042&to=2026291" \
+            "expect200|https://datachart.500.com/kl8/zoushi/jbzs_redblue.shtml?expect=200"
+          do
+            desc="${desc_url%%|*}"
+            url="${desc_url#*|}"
+            curl -sS -o /tmp/p.html -w "" --max-time 30 -A "$UA" "$url"
+            size=$(wc -c < /tmp/p.html)
+            rows=$(grep -oE '<tr>\s*<td align="center">[0-9]{7}' /tmp/p.html | wc -l)
+            balls=$(grep -o 'chartBall01' /tmp/p.html | wc -l)
+            echo "KL8ROWS|$desc|bytes=$size|rows=$rows|balls=$balls"
+          done
