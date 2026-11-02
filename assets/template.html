@@ -621,7 +621,8 @@ function renderSnap(){
     b.textContent='数据截至：3D 第'+FC3D[0].period+'期 / 快乐8 第'+KL8[0].period+'期（'+FC3D[0].date+'开奖）';
   }
   $('#snap-detail').textContent='本页数据快照生成于 '+(RAW.fetched_at||'')+
-    '，内置福彩3D '+N3+'期、快乐8 '+N8+'期官方开奖数据。';
+    '，内置福彩3D '+N3+'期、快乐8 '+N8+'期开奖数据'+
+    (RAW.fc3d_source?('，数据通道：3D '+RAW.fc3d_source+' / 快乐8 '+(RAW.kl8_source||'-')):'')+'。';
 }
 function bindEvents(){
   $$('.tab').forEach(function(t){
